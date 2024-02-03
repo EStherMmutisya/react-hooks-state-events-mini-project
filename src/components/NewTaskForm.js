@@ -1,21 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
+import CategoryFilter from "./CategoryFilter";
+import NewTaskForm from "./NewTaskForm";
 
-function NewTaskForm() {
+const App = () => {
+  const [tasks, setTasks] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const handleTaskFormSubmit = (newTask) => {
+    setTasks([...tasks, newTask]);
+  };
+
+  const handleSelectCategory = (category) => {
+    setSelectedCategory(category);
+  };
+
+  // Filter tasks based on the selected category
+  const filteredTasks = selectedCategory === "All"
+    ? tasks
+    : tasks.filter(task => task.category === selectedCategory);
+
   return (
-    <form className="new-task-form">
-      <label>
-        Details
-        <input type="text" name="text" />
-      </label>
-      <label>
-        Category
-        <select name="category">
-          {/* render <option> elements for each category here */}
-        </select>
-      </label>
-      <input type="submit" value="Add task" />
-    </form>
-  );
-}
+    <div>
+      <h1>Task Manager</h1>
+      <CategoryFilter categories={CATEGORIES} onSelectCategory={handleSelectCategory} />
+      <NewTaskForm categories={CATEGORIES} onTaskFormSubmit={handleTaskFormSubmit} />
 
-export default NewTaskForm;
+      <h2>Tasks</h2>
+      <ul>
+        {filteredTasks.map((task, index) => (
+          <li key={index}>
+            {task.text} - {task.category}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default App;
